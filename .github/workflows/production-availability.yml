@@ -1,0 +1,19 @@
+name: Production availability
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  homepage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Confirm the public homepage returns HTTP 200
+        run: |
+          status="$(curl --location --silent --show-error --output /dev/null --write-out '%{http_code}' --max-time 20 https://booked.marketing)"
+          test "$status" = "200"
